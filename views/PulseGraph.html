@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <link href="/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="/css/AdminLTE.min.css" rel="stylesheet" type="text/css" />
+	<link rel="stylesheet" type="text/css" href="https://www.highcharts.com/samples/static/highslide.css" />
+  </head>
+  
+  <body class="register-page">
+  <div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>	
+  <input type="hidden" value  = "<%=userid%>" id= "user_id">
+  </body>
+  
+<script src="/plugins/jQuery/jQuery-2.1.3.min.js"></script>
+    <!-- Bootstrap 3.3.2 JS -->
+<script src="/js/bootstrap.min.js" type="text/javascript"></script>
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/data.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
+
+<!-- Additional files for the Highslide popup effect -->
+<script src="https://www.highcharts.com/samples/static/highslide-full.min.js"></script>
+<script src="https://www.highcharts.com/samples/static/highslide.config.js" charset="utf-8"></script>
+<script>
+
+
+window.onload = function() {
+	
+	
+	$.ajax({
+        url: "/api/pulserate/getData?userId="+document.getElementById("user_id").value,
+        contentType: "application/json",
+        type: "GET",
+        success: function(data) {        	
+        	drawGraph(data);
+        },
+        error: function(errorThrown) {
+        	
+         }
+    });
+
+	
+}
+
+function drawGraph(data)
+{
+	var csv = ConvertToCSV(data.result);
+	$('#container').highcharts({
+
+        data: {
+            csv: csv
+        },
+
+        title: {
+            text: 'Pulse Rate Graph'
+        },
+
+        xAxis: {
+            tickInterval: 7 * 24 * 3600 * 1000, // one week
+            tickWidth: 0,
+            gridLineWidth: 1,
+            labels: {
+                align: 'left',
+                x: 3,
+                y: -3
+            }
+        },
+
+        yAxis: [{ // left y axis
+            title: {
+                text: null
+            },
+            labels: {
+                align: 'left',
+                x: 3,
+                y: 16,
+                format: '{value:.,0f}'
+            },
+            showFirstLabel: false
+        }, { // right y axis
+            linkedTo: 0,
+            gridLineWidth: 0,
+            opposite: true,
+            title: {
+                text: null
+            },
+            labels: {
+                align: 'right',
+                x: -3,
+                y: 16,
+                format: '{value:.,0f}'
+            },
+            showFirstLabel: false
+        }],
+
+        legend: {
+            align: 'left',
+            verticalAlign: 'top',
+            y: 20,
+            floating: true,
+            borderWidth: 0
+        },
+
+        tooltip: {
+            shared: true,
+            crosshairs: true
+        },
+
+        plotOptions: {
+            series: {
+                cursor: 'pointer',
+                point: {
+                    events: {
+                        click: function (e) {
+                            hs.htmlExpand(null, {
+                                pageOrigin: {
+                                    x: e.pageX || e.clientX,
+                                    y: e.pageY || e.clientY
+                                },
+                                headingText: this.series.name,
+                                maincontentText: Highcharts.dateFormat('%A, %b %e, %Y', this.x) + ':<br/> ' +
+                                    this.y + 'Pulse Rate',
+                                width: 200
+                            });
+                        }
+                    }
+                },
+                marker: {
+                    lineWidth: 1
+                }
+            }
+        },
+
+        series: [{
+            name: 'All visits',
+            lineWidth: 4,
+            marker: {
+                radius: 4
+            }
+        }]
+    });
+}
+
+function ConvertToCSV(objArray) {
+    var array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
+    var str = '';
+	str = 'Day,Pulse Rate' + '\r\n';
+    for (var i = 0; i < array.length; i++) {
+        var line = '';
+        for (var index in array[i]) {
+        	if(index === 'date' || index === 'pulseRate')
+            {
+        		if (line != '') line += ','
+        		line += array[i][index];
+            }
+
+            
+        }
+        str += line + '\r\n';
+    }
+
+    return str;
+}
+
+</script>
+
+</html>
+
