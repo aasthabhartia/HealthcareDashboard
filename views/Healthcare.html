@@ -63,6 +63,7 @@
                        
                     </p>
                     <input type="hidden" value  = "<%=userid%>" id= "user_id">
+                    <input type="hidden" id= "has_heart_disease">
                     
                   </li>
                 </ul>
@@ -108,8 +109,10 @@
             <li><a onclick="showGraph()" href="/ActivityGraph?userId=<%=userid%>" target="graph_iframe"><i class="fa fa-circle-o"></i> Activity Details Graph</a></li>
             <li><a onclick="showGraph()" href="/ActivityGraph2?userId=<%=userid%>" target="graph_iframe"><i class="fa fa-circle-o"></i> Activity Details Graphy 2</a></li>
             <li><a onclick="showGraph()" href="/SleepGraph?userId=<%=userid%>" target="graph_iframe"><i class="fa fa-circle-o"></i> Sleep Pattern Graph</a></li>
+            <li><a onclick="showGraph()" href="/SleepEfficiencyGraph?userId=<%=userid%>" target="graph_iframe"><i class="fa fa-circle-o"></i> Sleep Efficiency Graph</a></li>
           </ul>
         </li>
+        	<li class="active" ><a  id="decisionTree" href="" onclick="showGraph()" target="graph_iframe"><i class="fa fa-book"></i>My Health Condition</a></li>
               </ul>
             </li>
             
@@ -276,7 +279,7 @@
 <div class="row" id="graph_section" style="display: none;">
             <div class="col-md-12">
              
-			<iframe src="/PulseGraph?userId=<%=userid%>" width="100%" height="500px" name="graph_iframe"></iframe>
+			<iframe src="/PulseGraph?userId=<%=userid%>" width="100%" height="500px" name="graph_iframe" frameBorder="0"></iframe>
  
              </div><!-- /.col (RIGHT) -->
           </div><!-- /.row -->  
@@ -383,6 +386,9 @@
              	$("#ud_height").text(userdata.result.height);
              	$("#ud_phone").text(userdata.result.phoneNumber);
              	$("#ud_dob").text(userdata.result.dateOfBirth);
+             	$("#decisionTree").attr("href", "/DecisionTree?hasHeartDisease=" + userdata.result.hasHeartDisease + "&userId=" + 
+             			document.getElementById("user_id").value );
+             	
             },
             error: function(errorThrown) {
             	

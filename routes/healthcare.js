@@ -48,6 +48,20 @@ exports.sleepGraph = function(req, res) {
 
 };
 
+exports.sleepEfficiencyGraph = function(req, res) {
+	
+	var userId = new ObjectID(req.query.userId);
+	res.render('SleepEfficiencyGraph',{userid:userId});
+
+};
+exports.decisionTree = function(req, res) {
+	
+	var hasHeartDisease = req.query.hasHeartDisease;
+	var userId = new ObjectID(req.query.userId);
+	res.render('DecisionTree',{hasHeartdisease:hasHeartDisease , userid:userId });
+
+};
+
 exports.getpatientPulserateData = function(req, res)
 {
 	
@@ -66,6 +80,29 @@ exports.getpatientPulserateData = function(req, res)
 	    	var r = JSON.parse(body);
 	        console.info('\n\nCall completed');
 	        res.send({result:r});
+	}
+	});
+
+};
+
+exports.getDecisionTree = function(req, res)
+{
+	
+	var userId = new ObjectID(req.query.userId);
+	var request = require('request');
+	
+	request({
+	    //url: 'http://localhost:8080/api/pulserate/' + userId + '/days/30', //URL to hit
+	    url : 'http://localhost:8080/api/heartcondition/' + userId + '/feedbackloop',
+		method: 'GET'	    
+	}, function(error, response, body){
+	    if(error) {	    	
+	        console.log(error);	       
+	    } 
+	    else {
+	    	
+	        console.info('\n\nCall completed');
+	        res.send({result:body});
 	}
 	});
 

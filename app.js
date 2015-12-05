@@ -37,9 +37,13 @@ app.get('/PulseGraph2',healthcare.pulseGraph2);
 app.get('/ActivityGraph',healthcare.activityGraph);
 app.get('/ActivityGraph2',healthcare.activityGraph2);
 app.get('/SleepGraph',healthcare.sleepGraph);
+app.get('/DecisionTree',healthcare.decisionTree);
+app.get('/SleepEfficiencyGraph',healthcare.sleepEfficiencyGraph);
 app.get('/api/pulserate/getData', healthcare.getpatientPulserateData);
 app.get('/api/activity/getData', healthcare.getpatientActivityData);
 app.get('/api/sleep/getData', healthcare.getpatientSleepData);
+app.get('/api/decisiontree/getData', healthcare.getDecisionTree);
+
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
